@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Soal</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #f2f4f7;
+      }
+      header {
+        background: #222;
+        color: white;
+        text-align: center;
+        padding: 25px;
+      }
+      header h1 {
+        margin: 0;
+      }
+      .container {
+        max-width: 650px;
+        margin: auto;
+        padding: 20px;
+      }
+      .card {
+        background: white;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 3px 12px #ddd;
+      }
+      label {
+        display: block;
+        margin-top: 15px;
+        font-weight: bold;
+      }
+      select,
+      button {
+        width: 100%;
+        padding: 13px;
+        margin-top: 7px;
+        border-radius: 10px;
+        font-size: 15px;
+      }
+      select {
+        border: 1px solid #ccc;
+        background: white;
+      }
+      button {
+        border: 0;
+        background: #222;
+        color: white;
+        margin-top: 25px;
+        cursor: pointer;
+      }
+      button:disabled {
+        opacity: 0.5;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Soal random by Member and Admin</h1>
+      <p>10 soal dibuat oleh Admin</p>
+    </header>
+    <div class="container">
+      <div class="card">
+        <h2>Pengaturan Soal</h2>
+        <label for="mapel">Mata Pelajaran</label>
+        <select id="mapel">
+          <option value="MAT">MAT</option>
+          <option value="IPA">IPA</option>
+          <option value="IPS">IPS</option>
+          <option value="BIN">BIN</option>
+          <option value="PP">PP</option>
+          <option value="BIG">BIG</option>
+          <option value="Prak">Prak</option>
+          <option value="PAI">PAI</option>
+          <option value="TIK">TIK</option>
+          <option value="BJ">BJ</option>
+          <option value="PJOK">PJOK</option>
+          <option value="Programming">Programming</option>
+        </select>
+        <label for="kelas">Kelas</label>
+        <select id="kelas">
+          <option value="7">Kelas 7</option>
+          <option value="8">Kelas 8</option>
+          <option value="9">Kelas 9</option>
+        </select>
+        <label for="bab">Bab / Materi</label>
+        <select id="bab"></select>
+        <label for="kesulitan">Kesulitan</label>
+        <select id="kesulitan">
+          <option value="Mudah">🟢 Mudah</option>
+          <option value="Sedang" selected>🟡 Sedang</option>
+          <option value="Sulit">🔴 Sulit</option>
+        </select>
+        <button id="start">Buat 10 Soal Random</button>
+      </div>
+    </div>
+    <script>
+      const materi = {
+        MAT: [
+          "Bilangan Bulat",
+          "Bilangan Pecahan",
+          "Bilangan Rasional",
+          "Bilangan Irasional",
+          "Operasi Hitung Bilangan",
+          "Faktor dan Kelipatan",
+          "FPB dan KPK",
+          "Perbandingan",
+          "Skala",
+          "Persentase",
+          "Aritmetika Sosial",
+          "Pangkat",
+          "Akar Kuadrat",
+          "Bentuk Baku",
+          "Aljabar",
+          "Unsur-Unsur Aljabar",
+          "Operasi Bentuk Aljabar",
+          "Penjumlahan Aljabar",
+          "Pengurangan Aljabar",
+          "Perkalian Aljabar",
+          "Pembagian Aljabar",
+          "Pemfaktoran Aljabar",
+          "Pecahan Aljabar",
+          "Persamaan Linear Satu Variabel",
+          "Pertidaksamaan Linear Satu Variabel",
+          "Persamaan Linear Dua Variabel",
+          "Sistem Persamaan Linear Dua Variabel",
+          "Relasi",
+          "Fungsi",
+          "Koordinat Kartesius",
+          "Pola Bilangan",
+          "Barisan Aritmetika",
+          "Barisan Geometri",
+          "Himpunan",
+          "Garis dan Sudut",
+          "Segitiga",
+          "Segiempat",
+          "Lingkaran",
+          "Teorema Pythagoras",
+          "Kesebangunan",
+          "Kekongruenan",
+          "Transformasi Geometri",
+          "Bangun Ruang",
+          "Kubus",
+          "Balok",
+          "Prisma",
+          "Limas",
+          "Tabung",
+          "Kerucut",
+          "Bola",
+          "Luas Permukaan",
+          "Volume Bangun Ruang",
+          "Statistika",
+          "Mean",
+          "Median",
+          "Modus",
+          "Penyajian Data",
+          "Peluang",
+          "Ruang Sampel",
+          "Kalkulus",
+        ],
+        IPA: [
+          "Hakikat Ilmu Pengetahuan Alam",
+          "Pengukuran",
+          "Besaran dan Satuan",
+          "Zat dan Perubahannya",
+          "Unsur, Senyawa, dan Campuran",
+          "Suhu dan Kalor",
+          "Energi",
+          "Energi Kinetik dan Potensial",
+          "Gerak",
+          "Gaya",
+          "Hukum Newton",
+          "Pesawat Sederhana",
+          "Klasifikasi Makhluk Hidup",
+          "Ciri-Ciri Makhluk Hidup",
+          "Sel",
+          "Jaringan dan Organ",
+          "Sistem Organisasi Kehidupan",
+          "Ekosistem",
+          "Interaksi Makhluk Hidup",
+          "Rantai dan Jaring-Jaring Makanan",
+          "Pencemaran Lingkungan",
+          "Keanekaragaman Hayati",
+          "Tata Surya",
+          "Bumi dan Bulan",
+          "Lapisan Bumi",
+          "Cuaca dan Iklim",
+          "Sistem Tata Surya",
+        ],
+        IPS: [
+          "Kondisi Geografis Indonesia",
+          "Letak dan Luas Indonesia",
+          "Potensi Sumber Daya Alam",
+          "Sumber Daya Manusia",
+          "Interaksi Antarruang",
+          "Interaksi Sosial",
+          "Lembaga Sosial",
+          "Mobilitas Sosial",
+          "Keberagaman Masyarakat Indonesia",
+          "Aktivitas Ekonomi",
+          "Kegiatan Produksi",
+          "Kegiatan Distribusi",
+          "Kegiatan Konsumsi",
+          "Permintaan dan Penawaran",
+          "Pasar",
+          "Kebutuhan dan Kelangkaan",
+          "Pembangunan Ekonomi",
+          "Perdagangan",
+          "Kependudukan",
+          "Dinamika Penduduk",
+          "Keragaman Etnik dan Budaya",
+          "Keragaman Agama",
+          "Keragaman Bahasa",
+          "Sejarah Indonesia",
+          "Masa Praaksara",
+          "Kerajaan Hindu-Buddha",
+          "Kerajaan Islam",
+          "Kolonialisme dan Imperialisme",
+          "Pergerakan Nasional",
+          "Proklamasi Kemerdekaan",
+          "Perubahan Sosial",
+          "Globalisasi",
+          "Kewirausahaan",
+          "Kerja Sama Ekonomi",
+          "ASEAN",
+          "Perdagangan Internasional",
+          "Kegiatan Ekonomi Maritim",
+          "Lingkungan dan Pembangunan Berkelanjutan",
+        ],
+        BIN: [
+          "Teks Deskripsi",
+          "Teks Prosedur",
+          "Teks Narasi",
+          "Teks Eksplanasi",
+          "Teks Berita",
+          "Teks Persuasi",
+          "Teks Eksposisi",
+          "Teks Laporan Hasil Observasi",
+          "Teks Fabel",
+          "Teks Fantasi",
+          "Teks Puisi",
+          "Teks Cerita Pendek",
+          "Teks Ulasan",
+          "Surat Pribadi dan Surat Resmi",
+          "Iklan, Slogan, dan Poster",
+          "Kalimat Efektif",
+          "Kata Baku dan Tidak Baku",
+          "Ejaan dan Tanda Baca",
+          "Kosakata",
+          "Menyimpulkan Isi Teks",
+        ],
+        PP: [
+          "Pancasila sebagai Dasar Negara",
+          "Sejarah Perumusan Pancasila",
+          "Nilai-Nilai Pancasila",
+          "Pancasila sebagai Pandangan Hidup",
+          "Norma dalam Kehidupan",
+          "Hak dan Kewajiban",
+          "Keberagaman Masyarakat Indonesia",
+          "Bhinneka Tunggal Ika",
+          "Gotong Royong",
+          "Persatuan dan Kesatuan",
+          "UUD Negara Republik Indonesia Tahun 1945",
+          "Konstitusi dan Peraturan Perundang-undangan",
+          "Demokrasi",
+          "Musyawarah Mufakat",
+          "Negara Kesatuan Republik Indonesia",
+          "Bela Negara",
+          "Wawasan Nusantara",
+          "Keadilan Sosial",
+          "Kebebasan Berpendapat",
+          "Penerapan Pancasila dalam Kehidupan Sehari-hari",
+        ],
+        BIG: [
+          "Introduction",
+          "Greeting",
+          "Descriptive Text",
+          "Procedure Text",
+          "Narrative Text",
+          "Recount Text",
+          "Announcement",
+          "Invitation",
+          "Daily Activities",
+          "Simple Present Tense",
+          "Simple Past Tense",
+          "Vocabulary",
+        ],
+        Prak: [
+          "Kerajinan",
+          "Pengolahan",
+          "Budidaya",
+          "Rekayasa",
+          "Bahan Alam",
+          "Bahan Buatan",
+          "Teknik Pembuatan Kerajinan",
+          "Pengolahan Makanan",
+          "Budidaya Tanaman",
+          "Produk Rekayasa",
+        ],
+        PAI: [
+          "Al-Qur'an sebagai Petunjuk Hidup",
+          "Asmaul Husna",
+          "Akidah Islam",
+          "Akhlak Terpuji",
+          "Akhlak Tercela",
+          "Thaharah",
+          "Salat Wajib",
+          "Salat Berjamaah",
+          "Sujud Syukur, Sujud Sahwi, dan Sujud Tilawah",
+          "Zikir dan Doa",
+          "Puasa",
+          "Makanan dan Minuman Halal",
+          "Akhlak kepada Orang Tua dan Guru",
+          "Akhlak kepada Sesama",
+          "Toleransi dalam Islam",
+          "Nabi Muhammad sebagai Teladan",
+          "Hijrah Nabi Muhammad",
+          "Khulafaur Rasyidin",
+          "Sejarah Perkembangan Islam",
+          "Menjaga Lingkungan dalam Islam",
+        ],
+        TIK: [
+          "Pengenalan Teknologi Informasi",
+          "Sejarah Perkembangan Teknologi",
+          "Teknologi Informasi dan Komunikasi",
+          "Perangkat Keras Komputer",
+          "Perangkat Input",
+          "Perangkat Output",
+          "Perangkat Penyimpanan",
+          "Perangkat Proses",
+          "Perangkat Lunak",
+          "Sistem Operasi",
+          "Aplikasi Komputer",
+          "Manajemen File dan Folder",
+          "Ekstensi File",
+          "Jaringan Komputer",
+          "Jaringan LAN",
+          "Jaringan MAN",
+          "Jaringan WAN",
+          "Internet",
+          "Intranet",
+          "Web dan Browser",
+          "Mesin Pencari",
+          "Email",
+          "Media Sosial",
+          "Komunikasi Digital",
+          "Keamanan Digital",
+          "Privasi dan Data Pribadi",
+          "Password dan Autentikasi",
+          "Malware dan Virus",
+          "Phishing",
+          "Etika Berinternet",
+          "Jejak Digital",
+          "Hak Cipta Digital",
+          "Cloud Computing",
+          "Penyimpanan Cloud",
+          "Microsoft Word",
+          "Format Dokumen",
+          "Pengaturan Paragraf",
+          "Tabel pada Word",
+          "Gambar dan Bentuk pada Word",
+          "Header dan Footer",
+          "Microsoft Excel",
+          "Sel, Baris, dan Kolom",
+          "Format Data",
+          "Rumus dan Fungsi Excel",
+          "Tabel dan Grafik",
+          "Microsoft PowerPoint",
+          "Membuat Presentasi",
+          "Animasi dan Transisi",
+          "Algoritma",
+          "Flowchart",
+          "Logika Pemrograman",
+          "Variabel dan Tipe Data",
+          "Operator",
+          "Percabangan",
+          "Perulangan",
+          "Pemrograman Dasar",
+          "Pemrograman Menengah",
+          "Pemrograman Lanjutan",
+          "Data dan Informasi",
+          "Basis Data",
+          "Kecerdasan Buatan",
+          "Internet of Things",
+          "Dampak Teknologi",
+          "Literasi Digital",
+        ],
+        BJ: [
+          "Unggah-Ungguh Basa",
+          "Tata Krama",
+          "Basa Ngoko",
+          "Basa Krama",
+          "Teks Deskripsi",
+          "Teks Narasi",
+          "Teks Eksposisi",
+          "Teks Pidhato",
+          "Teks Geguritan",
+          "Tembang Macapat",
+          "Paribasan",
+          "Bebasan",
+          "Saloka",
+          "Cangkriman",
+          "Aksara Jawa",
+          "Sandhangan Aksara Jawa",
+          "Pasangan Aksara Jawa",
+          "Angka Jawa",
+          "Cerita Rakyat",
+          "Wayang",
+          "Adat lan Budaya Jawa",
+          "Sastra Jawa",
+        ],
+        PJOK: [
+          "Permainan Sepak Bola",
+          "Permainan Bola Voli",
+          "Permainan Bola Basket",
+          "Bulu Tangkis",
+          "Tenis Meja",
+          "Atletik",
+          "Lari Jarak Pendek",
+          "Lari Jarak Menengah",
+          "Lompat Jauh",
+          "Lempar Lembing",
+          "Senam Lantai",
+          "Senam Irama",
+          "Aktivitas Kebugaran Jasmani",
+          "Latihan Kekuatan",
+          "Latihan Kelenturan",
+          "Latihan Daya Tahan",
+          "Renang",
+          "Pencak Silat",
+          "Pola Hidup Sehat",
+          "Kesehatan Reproduksi",
+          "Gizi dan Nutrisi",
+          "Pertolongan Pertama",
+          "Keselamatan dalam Olahraga",
+        ],
+        Programming: [
+          "Python",
+          "JavaScript",
+          "TypeScript",
+          "Java",
+          "C",
+          "C++",
+          "C#",
+          "Go",
+          "Rust",
+          "PHP",
+          "Ruby",
+          "Swift",
+          "Kotlin",
+          "Dart",
+          "Lua",
+          "R",
+          "Julia",
+          "MATLAB",
+          "SQL",
+          "PL/SQL",
+          "T-SQL",
+          "Assembly",
+          "Perl",
+          "Haskell",
+          "Scala",
+          "Elixir",
+          "Erlang",
+          "Fortran",
+          "COBOL",
+          "Objective-C",
+          "Visual Basic .NET",
+          "F#",
+          "D",
+          "Zig",
+          "Crystal",
+          "Nim",
+          "OCaml",
+          "Prolog",
+          "GDScript",
+          "MicroPython",
+          "Solidity",
+          "V",
+          "Ada",
+          "Pascal",
+          "Delphi",
+          "Bash",
+          "PowerShell",
+          "Groovy",
+          "Clojure",
+          "Common Lisp",
+          "Scheme",
+          "Smalltalk",
+          "ABAP",
+          "Apex",
+          "LabVIEW",
+          "Scratch",
+          "Logo",
+          "Awk",
+          "sed",
+          "Racket",
+          "Dylan",
+          "Reason",
+          "ReScript",
+          "Q#",
+          "Hack",
+          "Pony",
+          "Vala",
+          "Odin",
+          "Mojo",
+          "Zsh",
+          "Fish",
+          "Nix",
+          "Tcl",
+          "PostScript",
+          "Verilog",
+          "VHDL",
+          "SystemVerilog",
+          "OpenCL",
+          "CUDA",
+          "GLSL",
+          "HLSL",
+          "WebAssembly",
+          "Brainfuck",
+          "Forth",
+          "Factor",
+          "APL",
+          "J",
+          "K",
+          "Q",
+          "Mercury",
+          "Idris",
+          "Agda",
+          "Lean",
+          "Zonnon",
+          "Ring",
+          "Janet",
+          "Pike",
+          "Icon",
+          "SNOBOL",
+          "REXX",
+          "Small Basic",
+          "AutoHotkey",
+          "AutoIt",
+          "GAMS",
+          "SAS",
+          "Stata",
+          "Wolfram Language",
+          "VBA",
+          "VBScript",
+          "ActionScript",
+          "ColdFusion",
+          "Elm",
+          "PureScript",
+          "Ceylon",
+          "Frege",
+          "Kotlin/Native",
+          "QML",
+          "Vyper",
+          "Move",
+          "Cairo",
+          "Motoko",
+          "X++",
+          "Inform",
+          "ScratchJr",
+          "Blockly",
+        ],
+      };
+
+      const mapel = document.getElementById("mapel");
+      const bab = document.getElementById("bab");
+      const button = document.getElementById("start");
+
+      function updateMateri() {
+        const selected = mapel.value;
+        bab.innerHTML = "";
+
+        materi[selected].forEach(function (item) {
+          const option = document.createElement("option");
+          option.value = item;
+          option.textContent = item;
+          bab.appendChild(option);
+        });
+      }
+
+      updateMateri();
+      mapel.addEventListener("change", updateMateri);
+
+      button.addEventListener("click", async function () {
+        button.disabled = true;
+        button.textContent = "Admin sedang membuat 10 soal...";
+
+        try {
+          const response = await fetch("/generate", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              mapel: mapel.value,
+              kelas: document.getElementById("kelas").value,
+              bab: bab.value,
+              kesulitan: document.getElementById("kesulitan").value,
+            }),
+          });
+
+          const data = await response.json();
+
+          if (!response.ok || data.error) {
+            throw new Error(data.error || "Gagal membuat soal.");
+          }
+
+          sessionStorage.setItem("questions", JSON.stringify(data.questions));
+
+          window.location.href = "/quiz";
+        } catch (error) {
+          alert(error.message || "Gagal menghubungi Admin.");
+          button.disabled = false;
+          button.textContent = "Buat 10 Soal Random";
+        }
+      });
+    </script>
+  </body>
+</html>
