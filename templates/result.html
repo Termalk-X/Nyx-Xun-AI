@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hasil Soal</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial;
+        background: #f2f4f7;
+      }
+      header {
+        background: #222;
+        color: white;
+        text-align: center;
+        padding: 25px;
+      }
+      .container {
+        max-width: 700px;
+        margin: auto;
+        padding: 20px;
+      }
+      .card {
+        background: white;
+        padding: 20px;
+        border-radius: 15px;
+        margin-bottom: 15px;
+      }
+      .score {
+        text-align: center;
+        font-size: 45px;
+        font-weight: bold;
+      }
+      .correct {
+        color: green;
+      }
+      .wrong {
+        color: red;
+      }
+      button {
+        width: 100%;
+        padding: 13px;
+        border: 0;
+        border-radius: 10px;
+        background: #222;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>🏆 Hasil Ujian</h1>
+    </header>
+    <div class="container">
+      <div class="card">
+        <div class="score" id="score">-</div>
+        <p id="summary"></p>
+        <p id="comment"></p>
+      </div>
+      <div id="details"></div>
+      <button onclick="location.href = '/'">🔄 Soal lagi?</button>
+    </div>
+    <script>
+      const result = JSON.parse(sessionStorage.getItem("result"));
+      if (!result) {
+        location.href = "/";
+      }
+      document.getElementById("score").textContent = result.score + "/100";
+      document.getElementById("summary").textContent =
+        `${result.correct} benar • ${result.wrong} salah`;
+      document.getElementById("comment").textContent = result.comment;
+      const details = document.getElementById("details");
+      result.details.forEach(function (item) {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+        <b>Soal ${item.number}</b>
+        <p>
+            Jawaban kamu:
+            <b>${item.user_answer}</b>
+        </p>
+
+        <p>
+            Jawaban benar:
+            <b>${item.correct_answer}</b>
+        </p>
+
+        <p>
+            ${item.correct ? "✅ Benar" : "❌ Salah"}
+        </p>
+
+        <p>
+            <b>Pembahasan:</b><br>
+            ${item.explanation}
+        </p>
+    `;
+        details.appendChild(card);
+      });
+    </script>
+  </body>
+</html>
