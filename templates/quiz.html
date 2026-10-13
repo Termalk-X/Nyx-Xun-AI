@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Soal dari Admin</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial;
+        background: #f2f4f7;
+      }
+      header {
+        background: #222;
+        color: white;
+        padding: 18px;
+        text-align: center;
+      }
+      .container {
+        max-width: 700px;
+        margin: auto;
+        padding: 20px;
+      }
+      .card {
+        background: white;
+        padding: 20px;
+        border-radius: 15px;
+      }
+      .option {
+        padding: 15px;
+        margin: 10px 0;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        cursor: pointer;
+      }
+      .option.selected {
+        background: #ddd;
+        border: 2px solid #222;
+      }
+      button {
+        width: 100%;
+        padding: 13px;
+        margin-top: 20px;
+        border: 0;
+        border-radius: 10px;
+        background: #222;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h2>📝 Soal by Admin</h2>
+      <div id="number"></div>
+    </header>
+    <div class="container">
+      <div class="card">
+        <h3 id="question"></h3>
+        <div id="options"></div>
+        <button id="next">Soal Berikutnya</button>
+      </div>
+    </div>
+    <script>
+      const questions = JSON.parse(sessionStorage.getItem("questions"));
+      if (!questions || questions.length !== 10) {
+        window.location.href = "/";
+      }
+      let current = 0;
+      let answers = [];
+      function showQuestion() {
+        const soal = questions[current];
+        document.getElementById("number").textContent =
+          `Soal ${current + 1} dari 10`;
+        document.getElementById("question").textContent = soal.question;
+        const options = document.getElementById("options");
+        options.innerHTML = "";
+        for (const letter of ["A", "B", "C", "D"]) {
+          const div = document.createElement("div");
+          div.className = "option";
+          div.textContent = letter + ". " + soal.options[letter];
+          if (answers[current] === letter) {
+            div.classList.add("selected");
+          }
+          div.onclick = function () {
+            answers[current] = letter;
+            document
+              .querySelectorAll(".option")
+              .forEach((x) => x.classList.remove("selected"));
+            div.classList.add("selected");
+          };
+          options.appendChild(div);
+        }
+        document.getElementById("next").textContent =
+          current === 9 ? "🏁 Selesai & Nilai" : "➡️ Soal Berikutnya";
+      }
+      document.getElementById("next").onclick = async function () {
+        if (!answers[current]) {
+          alert("Pilih jawaban terlebih dahulu!");
+          return;
+        }
+        if (current < 9) {
+          current++;
+          showQuestion();
+          return;
+        }
+        this.disabled = true;
+        this.textContent = "🤖 Admin sedang menilai...";
+        try {
+          const response = await fetch("/finish", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              questions: questions,
+              answers: answers,
+            }),
+          });
+          const result = await response.json();
+          if (result.error) {
+            alert(result.error);
+            this.disabled = false;
+            this.textContent = "🏁 Selesai & Nilai";
+            return;
+          }
+          sessionStorage.setItem("result", JSON.stringify(result));
+          window.location.href = "/result";
+        } catch (error) {
+          alert("Gagal menghubungi Admin.");
+          this.disabled = false;
+          this.textContent = "🏁 Selesai & Nilai";
+        }
+      };
+      showQuestion();
+    </script>
+  </body>
+</html>
